@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useRef, useCallback, useEffect } from "react";
+import { subscribeToBooks, saveBooksToCloud } from "./firebase.js";
 
 const STORAGE_KEY = "shelfkeeper_books_v2";
 const COVER_CACHE_KEY = "shelfkeeper_cover_cache_v1";
@@ -923,6 +924,33 @@ export default function BookTracker() {
     } catch (e) {}
     return [];
   });
+  const [syncStatus, setSyncStatus] = useState("connecting");
+  const hasReceivedFirstSnapshot = useRef(false);
+
+  // Subscribe to the shared cloud database — fires immediately with current
+  // data, then again in real time whenever any device (phone/laptop) writes.
+  useEffect(() => {
+    const unsubscribe = subscribeToBooks((cloudBooks) => {
+      if (!hasReceivedFirstSnapshot.current && cloudBooks.length === 0) {
+        // Nothing in the cloud yet. If this device already has local data
+        // (e.g. from before sync was set up), push it up as the starting point.
+        hasReceivedFirstSnapshot.current = true;
+        setSyncStatus("synced");
+        setBooksRaw((prev) => {
+          if (prev.length > 0) saveBooksToCloud(prev);
+          return prev;
+        });
+        return;
+      }
+      hasReceivedFirstSnapshot.current = true;
+      setBooksRaw(cloudBooks);
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(cloudBooks));
+      } catch (e) {}
+      setSyncStatus("synced");
+    });
+    return () => unsubscribe();
+  }, []);
 
   const persist = useCallback((updater) => {
     setBooksRaw((prev) => {
@@ -930,6 +958,8 @@ export default function BookTracker() {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
       } catch (e) {}
+      setSyncStatus("syncing");
+      saveBooksToCloud(next).then(() => setSyncStatus("synced"));
       return next;
     });
   }, []);
@@ -1077,6 +1107,7 @@ export default function BookTracker() {
 
   return (
     <div style={{ fontFamily: "'Poppins', 'Segoe UI', sans-serif", background: THEME.bg, minHeight: "100vh", padding: "0 0 60px" }}>
+      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
       <div style={{ maxWidth: 1080, margin: "0 auto", padding: "32px 20px" }}>
         <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16, marginBottom: 24 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
@@ -1120,7 +1151,25 @@ export default function BookTracker() {
               </div>
             </div>
           </div>
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+            <div
+              title={syncStatus === "synced" ? "Synced across your devices" : syncStatus === "syncing" ? "Syncing..." : "Connecting..."}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 5,
+                fontSize: 12,
+                color: syncStatus === "synced" ? THEME.accent : THEME.textFaint,
+                padding: "6px 10px",
+              }}
+            >
+              <i
+                className={syncStatus === "syncing" ? "ti ti-refresh" : "ti ti-cloud-check"}
+                aria-hidden="true"
+                style={{ fontSize: 14, animation: syncStatus === "syncing" ? "spin 1s linear infinite" : "none" }}
+              />
+              {syncStatus === "synced" ? "Synced" : syncStatus === "syncing" ? "Syncing" : "Connecting"}
+            </div>
             <button
               onClick={() => setShowStats((s) => !s)}
               style={{ ...selectStyle, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}
