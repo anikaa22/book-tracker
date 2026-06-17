@@ -31,50 +31,6 @@ const THEME = {
   dangerSoftBg: "#f3ddd8",
 };
 
-// Seeded from the uploaded books.csv (2014-present reading history)
-const SEED_BOOKS = [
-  { id: "1", title: "Throne of Glass", series: "Throne of Glass", seriesNumber: "1", author: "Sarah J. Maas", rating: 5, status: "Read", startDate: "", finishDate: "2017-01-01", genre: "Fantasy", notes: "Best!", cover: "" },
-  { id: "2", title: "Shatter Me", series: "Shatter Me", seriesNumber: "1", author: "Tahereh Mafi", rating: 5, status: "Read", startDate: "", finishDate: "2018-01-01", genre: "YA Dystopian", notes: "emotionally impactful", cover: "" },
-  { id: "3", title: "Unravel Me", series: "Shatter Me", seriesNumber: "2", author: "Tahereh Mafi", rating: 5, status: "Read", startDate: "", finishDate: "2018-01-01", genre: "YA Dystopian", notes: "", cover: "" },
-  { id: "4", title: "Harry Potter and the Sorcerer's Stone", series: "Harry Potter", seriesNumber: "1", author: "J.K Rowling", rating: 5, status: "Read", startDate: "", finishDate: "2015-01-01", genre: "Fantasy", notes: "most life changing", cover: "" },
-  { id: "5", title: "Harry Potter and the Chamber of Secrets", series: "Harry Potter", seriesNumber: "2", author: "J.K Rowling", rating: 5, status: "Read", startDate: "", finishDate: "2015-01-01", genre: "Fantasy", notes: "", cover: "" },
-  { id: "6", title: "Harry Potter and the Prisoner of Azkaban", series: "Harry Potter", seriesNumber: "3", author: "J.K Rowling", rating: 5, status: "Read", startDate: "", finishDate: "2015-01-01", genre: "Fantasy", notes: "", cover: "" },
-  { id: "7", title: "Pride and Prejudice", series: "", seriesNumber: "", author: "Jane Austen", rating: 3, status: "Read", startDate: "", finishDate: "2019-01-01", genre: "Classic", notes: "classic", cover: "" },
-  { id: "8", title: "The Fault in Our Stars", series: "", seriesNumber: "", author: "John Green", rating: 3.5, status: "Read", startDate: "", finishDate: "2019-09-01", genre: "Contemporary", notes: "cry fest", cover: "" },
-  { id: "9", title: "Harry Potter and the Goblet of Fire", series: "Harry Potter", seriesNumber: "4", author: "J.K Rowling", rating: 5, status: "Read", startDate: "", finishDate: "2015-01-01", genre: "Fantasy", notes: "", cover: "" },
-  { id: "10", title: "Matilda", series: "", seriesNumber: "", author: "Roald Dalh", rating: 3.5, status: "Read", startDate: "", finishDate: "2014-01-01", genre: "Children's", notes: "", cover: "" },
-  { id: "11", title: "Charlie and the Chocolate Factory", series: "", seriesNumber: "", author: "Roald Dalh", rating: 3.5, status: "Read", startDate: "", finishDate: "2014-01-01", genre: "Children's", notes: "", cover: "" },
-  { id: "12", title: "Harry Potter and the Order of the Phoenix", series: "Harry Potter", seriesNumber: "5", author: "J.K Rowling", rating: 5, status: "Read", startDate: "", finishDate: "2016-01-01", genre: "Fantasy", notes: "best in the series", cover: "" },
-  { id: "13", title: "Harry Potter and the Half-Blood Prince", series: "Harry Potter", seriesNumber: "6", author: "J.K Rowling", rating: 5, status: "Read", startDate: "", finishDate: "2016-01-01", genre: "Fantasy", notes: "", cover: "" },
-  { id: "14", title: "Harry Potter and the Deathly Hallows", series: "Harry Potter", seriesNumber: "7", author: "J.K Rowling", rating: 5, status: "Read", startDate: "", finishDate: "2016-01-01", genre: "Fantasy", notes: "", cover: "" },
-  { id: "15", title: "Harry Potter and the Cursed Child", series: "Harry Potter", seriesNumber: "8", author: "J.K Rowling", rating: 5, status: "Read", startDate: "", finishDate: "2016-01-01", genre: "Fantasy", notes: "", cover: "" },
-  { id: "16", title: "Life of Pi", series: "", seriesNumber: "", author: "Yann Martel", rating: 3.5, status: "Read", startDate: "", finishDate: "2015-01-01", genre: "Literary Fiction", notes: "", cover: "" },
-  { id: "17", title: "The Maze Runner", series: "The Maze Runner", seriesNumber: "1", author: "James Dashner", rating: 4.5, status: "Read", startDate: "", finishDate: "2015-01-01", genre: "YA Dystopian", notes: "", cover: "" },
-  { id: "18", title: "The Scorch Trials", series: "The Maze Runner", seriesNumber: "2", author: "James Dashner", rating: 4.5, status: "Read", startDate: "", finishDate: "2016-01-01", genre: "YA Dystopian", notes: "", cover: "" },
-  { id: "19", title: "The Death Cure", series: "The Maze Runner", seriesNumber: "3", author: "James Dashner", rating: 3.5, status: "Read", startDate: "", finishDate: "2016-05-01", genre: "YA Dystopian", notes: "", cover: "" },
-  { id: "20", title: "Station Eleven", series: "", seriesNumber: "", author: "Emily St. John Mendel", rating: 4, status: "Read", startDate: "", finishDate: "2025-01-01", genre: "Literary Fiction", notes: "unexpected but insightful", cover: "" },
-  { id: "21", title: "Manacled - Dramione", series: "", seriesNumber: "", author: "Fanfiction", rating: 5, status: "Read", startDate: "", finishDate: "2025-01-01", genre: "Romance", notes: "altered brain chemistry - 900+ pages", cover: "" },
-  { id: "22", title: "A Darker Shade of Magic", series: "Shades of Magic", seriesNumber: "1", author: "V.E Schwab", rating: 3.5, status: "Read", startDate: "", finishDate: "2025-05-01", genre: "Fantasy", notes: "could be better", cover: "" },
-  { id: "23", title: "The Deal", series: "", seriesNumber: "", author: "Elle Kennedy", rating: 4, status: "Read", startDate: "", finishDate: "2025-01-01", genre: "Romance", notes: "cute cliche rom-com", cover: "" },
-  { id: "24", title: "Ninth House", series: "Alex Stern", seriesNumber: "1", author: "Leigh Bardugo", rating: 4, status: "Read", startDate: "", finishDate: "2024-01-01", genre: "Fantasy", notes: "dark and gothic, not my style but good", cover: "" },
-  { id: "25", title: "1984", series: "", seriesNumber: "", author: "George Orwell", rating: 5, status: "Read", startDate: "", finishDate: "2024-02-01", genre: "Classic", notes: "scarily plausible", cover: "" },
-  { id: "26", title: "The Kite Runner", series: "", seriesNumber: "", author: "Khaled Hosseini", rating: 3.5, status: "Read", startDate: "", finishDate: "2024-02-01", genre: "Literary Fiction", notes: "trauma porn", cover: "" },
-  { id: "27", title: "House of Sky and Breath", series: "Crescent City", seriesNumber: "2", author: "Sarah J. Maas", rating: 4, status: "Read", startDate: "", finishDate: "2024-06-01", genre: "Fantasy", notes: "", cover: "" },
-  { id: "28", title: "Red Queen", series: "", seriesNumber: "", author: "Victoria Aveyard", rating: 3, status: "Read", startDate: "", finishDate: "2022-07-01", genre: "YA Fantasy", notes: "classic YA", cover: "" },
-  { id: "29", title: "Beach Read", series: "", seriesNumber: "", author: "Emily Henry", rating: 3.5, status: "Read", startDate: "", finishDate: "2022-09-01", genre: "Romance", notes: "bearable contemporary romance", cover: "" },
-  { id: "30", title: "Crown of Midnight", series: "Throne of Glass", seriesNumber: "2", author: "Sarah J. Maas", rating: 4, status: "Read", startDate: "", finishDate: "2017-10-01", genre: "Fantasy", notes: "", cover: "" },
-  { id: "31", title: "Heir of Fire", series: "Throne of Glass", seriesNumber: "3", author: "Sarah J. Maas", rating: 4.5, status: "Read", startDate: "", finishDate: "2017-11-01", genre: "Fantasy", notes: "", cover: "" },
-  { id: "32", title: "Queen of Shadows", series: "Throne of Glass", seriesNumber: "4", author: "Sarah J. Maas", rating: 5, status: "Read", startDate: "", finishDate: "2017-11-01", genre: "Fantasy", notes: "", cover: "" },
-  { id: "33", title: "Empire of Storms", series: "Throne of Glass", seriesNumber: "5", author: "Sarah J. Maas", rating: 5, status: "Read", startDate: "", finishDate: "2017-11-01", genre: "Fantasy", notes: "", cover: "" },
-  { id: "34", title: "Tower of Dawn", series: "Throne of Glass", seriesNumber: "6", author: "Sarah J. Maas", rating: 5, status: "Read", startDate: "", finishDate: "2017-12-01", genre: "Fantasy", notes: "", cover: "" },
-  { id: "35", title: "Kingdom of Ash", series: "Throne of Glass", seriesNumber: "7", author: "Sarah J. Maas", rating: 5, status: "Read", startDate: "", finishDate: "2018-11-01", genre: "Fantasy", notes: "", cover: "" },
-  { id: "36", title: "The Mistake", series: "", seriesNumber: "", author: "Elle Kennedy", rating: 4, status: "Read", startDate: "", finishDate: "2025-10-27", genre: "Romance", notes: "good wattpad romance", cover: "" },
-  { id: "37", title: "Daughter of No Worlds", series: "", seriesNumber: "", author: "Carissa Broadbent", rating: 4, status: "Read", startDate: "", finishDate: "2025-11-01", genre: "Fantasy", notes: "decent fantasy but would not continue the series", cover: "" },
-  { id: "38", title: "Fourth Wing", series: "The Empyrean", seriesNumber: "1", author: "Rebecca Yarros", rating: 4.5, status: "Read", startDate: "", finishDate: "2025-01-01", genre: "Fantasy Romance", notes: "almost as addictive as ToG", cover: "" },
-  { id: "39", title: "Iron Flame", series: "The Empyrean", seriesNumber: "2", author: "Rebecca Yarros", rating: 4.5, status: "Read", startDate: "", finishDate: "2025-01-01", genre: "Fantasy Romance", notes: "very good sequel, although a bit long", cover: "" },
-  { id: "40", title: "Onyx Storm", series: "The Empyrean", seriesNumber: "3", author: "Rebecca Yarros", rating: 3, status: "DNF", startDate: "", finishDate: "2025-01-01", genre: "Fantasy Romance", notes: "Totally lost the plot, DNF", cover: "" },
-  { id: "41", title: "Road of Bones", series: "The Ashen Series", seriesNumber: "1", author: "Demi Winters", rating: 5, status: "Read", startDate: "", finishDate: "2026-03-01", genre: "Fantasy Romance", notes: "ToG levels good", cover: "" },
-];
 
 function uid() {
   return Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
@@ -174,6 +130,91 @@ function getYear(dateStr) {
   return m ? m[1] : null;
 }
 
+function parsePartialDate(dateStr) {
+  if (!dateStr) return { year: "", month: "", day: "" };
+  const parts = String(dateStr).split("-");
+  return {
+    year: parts[0] || "",
+    month: parts[1] || "",
+    day: parts[2] || "",
+  };
+}
+
+function buildPartialDate(year, month, day) {
+  if (!year) return "";
+  if (!month) return year;
+  if (!day) return `${year}-${month}`;
+  return `${year}-${month}-${day}`;
+}
+
+const MONTH_NAMES = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
+];
+
+function daysInMonth(year, month) {
+  if (!year || !month) return 31;
+  return new Date(Number(year), Number(month), 0).getDate();
+}
+
+function PartialDateInput({ value, onChange, minYear = 2000 }) {
+  const { year, month, day } = parsePartialDate(value);
+  const currentYear = new Date().getFullYear();
+  const years = [];
+  for (let y = currentYear + 1; y >= minYear; y--) years.push(String(y));
+  const maxDay = daysInMonth(year, month);
+
+  function update(part, val) {
+    let y = year, m = month, d = day;
+    if (part === "year") y = val;
+    if (part === "month") m = val;
+    if (part === "day") d = val;
+    if (part === "year" && !val) {
+      m = "";
+      d = "";
+    }
+    if (part === "month" && !val) {
+      d = "";
+    }
+    if (d && m && Number(d) > daysInMonth(y, m)) {
+      d = "";
+    }
+    onChange(buildPartialDate(y, m, d));
+  }
+
+  const fieldStyle = {
+    padding: "8px 8px",
+    borderRadius: 8,
+    border: `1px solid ${THEME.border}`,
+    fontSize: 13,
+    background: "#fff",
+    color: THEME.textPrimary,
+  };
+
+  return (
+    <div style={{ display: "flex", gap: 6 }}>
+      <select value={year} onChange={(e) => update("year", e.target.value)} style={{ ...fieldStyle, flex: "1.2" }}>
+        <option value="">Year</option>
+        {years.map((y) => (
+          <option key={y} value={y}>{y}</option>
+        ))}
+      </select>
+      <select value={month} onChange={(e) => update("month", e.target.value)} disabled={!year} style={{ ...fieldStyle, flex: "1.6" }}>
+        <option value="">Month</option>
+        {MONTH_NAMES.map((name, idx) => (
+          <option key={name} value={String(idx + 1).padStart(2, "0")}>{name}</option>
+        ))}
+      </select>
+      <select value={day} onChange={(e) => update("day", e.target.value)} disabled={!month} style={{ ...fieldStyle, flex: "1" }}>
+        <option value="">Day</option>
+        {Array.from({ length: maxDay }, (_, i) => String(i + 1).padStart(2, "0")).map((d) => (
+          <option key={d} value={d}>{Number(d)}</option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
 // --- Automatic cover fetching via Open Library / Google Books ---
 function coverCacheGet() {
   try {
@@ -270,18 +311,25 @@ function Stars({ value, onChange, size = 16 }) {
             key={n}
             type="button"
             aria-label={`Rate ${n} star${n > 1 ? "s" : ""}`}
-            onClick={() => onChange && onChange(n === value ? 0 : n)}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onChange && onChange(n === value ? 0 : n);
+            }}
             style={{
               border: "none",
               background: "transparent",
               cursor: onChange ? "pointer" : "default",
-              padding: 0,
+              padding: 4,
               lineHeight: 0,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
             <i
               className={filled ? "ti ti-star-filled" : "ti ti-star"}
-              style={{ fontSize: size, color: filled ? THEME.gold : "#d9d2bf" }}
+              style={{ fontSize: size, color: filled ? THEME.gold : "#d9d2bf", pointerEvents: "none" }}
               aria-hidden="true"
             />
           </button>
@@ -445,15 +493,27 @@ function BookForm({ book, onSave, onCancel, onDelete }) {
         </div>
         <div>
           <label style={labelStyle}>My rating</label>
-          <Stars value={form.rating} onChange={(v) => update("rating", v)} size={20} />
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <Stars value={form.rating} onChange={(v) => update("rating", v)} size={22} />
+            <select
+              value={form.rating || 0}
+              onChange={(e) => update("rating", Number(e.target.value))}
+              style={{ ...inputStyle, width: "auto", padding: "4px 8px", fontSize: 13 }}
+            >
+              <option value={0}>No rating</option>
+              {[1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map((n) => (
+                <option key={n} value={n}>{n}</option>
+              ))}
+            </select>
+          </div>
         </div>
-        <div>
-          <label style={labelStyle}>Started</label>
-          <input type="date" style={inputStyle} value={form.startDate} onChange={(e) => update("startDate", e.target.value)} />
+        <div style={{ gridColumn: "1 / -1" }}>
+          <label style={labelStyle}>Started reading (year required, month/day optional)</label>
+          <PartialDateInput value={form.startDate} onChange={(v) => update("startDate", v)} />
         </div>
-        <div>
-          <label style={labelStyle}>Finished</label>
-          <input type="date" style={inputStyle} value={form.finishDate} onChange={(e) => update("finishDate", e.target.value)} />
+        <div style={{ gridColumn: "1 / -1" }}>
+          <label style={labelStyle}>Finished reading (year required, month/day optional)</label>
+          <PartialDateInput value={form.finishDate} onChange={(v) => update("finishDate", v)} />
         </div>
         <div style={{ gridColumn: "1 / -1" }}>
           <label style={labelStyle}>Notes</label>
@@ -848,7 +908,7 @@ export default function BookTracker() {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) return JSON.parse(stored);
     } catch (e) {}
-    return SEED_BOOKS;
+    return [];
   });
 
   const persist = useCallback((updater) => {
@@ -1125,7 +1185,14 @@ export default function BookTracker() {
         {sorted.length === 0 ? (
           <div style={{ textAlign: "center", padding: "60px 20px", color: THEME.textFaint }}>
             <i className="ti ti-book-off" aria-hidden="true" style={{ fontSize: 40 }} />
-            <p style={{ marginTop: 12, fontSize: 14 }}>No books match your filters yet.</p>
+            {books.length === 0 ? (
+              <>
+                <p style={{ marginTop: 12, fontSize: 14, color: THEME.textMuted }}>Your shelf is empty.</p>
+                <p style={{ marginTop: 4, fontSize: 13 }}>Add a book above, or import a CSV of your reading history.</p>
+              </>
+            ) : (
+              <p style={{ marginTop: 12, fontSize: 14 }}>No books match your filters yet.</p>
+            )}
           </div>
         ) : (
           grouped.map((group) => (
