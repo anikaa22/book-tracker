@@ -697,26 +697,27 @@ function BookCard({ book, onEdit, coverLoading }) {
 // --- Reading stats dashboard ---
 function YearBarChart({ data, maxYear }) {
   const max = Math.max(...data.map((d) => d.count), 1);
+  const chartHeight = 110;
   return (
     <div style={{ display: "flex", alignItems: "flex-end", gap: 6, height: 140, padding: "0 4px" }}>
       {data.map((d) => {
         const isMax = d.year === maxYear && d.count > 0;
-        const heightPct = (d.count / max) * 100;
+        const barHeight = d.count > 0 ? Math.max((d.count / max) * chartHeight, 6) : 2;
         return (
-          <div key={d.year} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 6, minWidth: 0 }}>
+          <div key={d.year} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", gap: 6, minWidth: 0, height: "100%" }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: isMax ? THEME.rose : THEME.textSecondary }}>{d.count || ""}</div>
             <div
               title={`${d.count} book${d.count === 1 ? "" : "s"} in ${d.year}`}
               style={{
                 width: "100%",
                 maxWidth: 28,
-                height: `${Math.max(heightPct, d.count > 0 ? 6 : 2)}%`,
+                height: `${barHeight}px`,
                 background: isMax
                   ? `linear-gradient(180deg, ${THEME.rose}, #b56673)`
                   : `linear-gradient(180deg, ${THEME.accentSoft}, ${THEME.accent})`,
                 borderRadius: 5,
-                minHeight: 3,
                 transition: "height 0.3s ease",
+                flexShrink: 0,
               }}
             />
             <div style={{ fontSize: 10.5, color: THEME.textFaint, writingMode: "horizontal-tb" }}>
@@ -729,30 +730,34 @@ function YearBarChart({ data, maxYear }) {
   );
 }
 
-function RatingDistribution({ counts }) {
-  const max = Math.max(...counts.map((c) => c.count), 1);
+function GenreBreakdown({ data }) {
+  const colors = [THEME.accent, THEME.rose, THEME.gold, THEME.blue, THEME.accentSoft, THEME.textFaint];
+  const total = data.reduce((s, d) => s + d.count, 0) || 1;
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-      {counts.map((c) => (
-        <div key={c.rating} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <div style={{ width: 38, fontSize: 12, color: THEME.textSecondary, display: "flex", alignItems: "center", gap: 2, flexShrink: 0 }}>
-            {c.rating}<i className="ti ti-star-filled" style={{ fontSize: 11, color: THEME.gold }} />
+    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      {data.map((d, i) => {
+        const pct = Math.round((d.count / total) * 100);
+        return (
+          <div key={d.genre}>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: THEME.textSecondary, marginBottom: 3 }}>
+              <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 140 }}>{d.genre}</span>
+              <span style={{ color: THEME.textFaint, flexShrink: 0, marginLeft: 8 }}>{d.count} · {pct}%</span>
+            </div>
+            <div style={{ background: THEME.surfaceAlt, borderRadius: 6, height: 10, overflow: "hidden" }}>
+              <div
+                style={{
+                  height: "100%",
+                  width: `${pct}%`,
+                  background: colors[i % colors.length],
+                  borderRadius: 6,
+                  minWidth: d.count > 0 ? 4 : 0,
+                  transition: "width 0.3s ease",
+                }}
+              />
+            </div>
           </div>
-          <div style={{ flex: 1, background: THEME.surfaceAlt, borderRadius: 6, height: 14, overflow: "hidden" }}>
-            <div
-              style={{
-                height: "100%",
-                width: `${(c.count / max) * 100}%`,
-                background: `linear-gradient(90deg, ${THEME.accentSoft}, ${THEME.accent})`,
-                borderRadius: 6,
-                minWidth: c.count > 0 ? 4 : 0,
-                transition: "width 0.3s ease",
-              }}
-            />
-          </div>
-          <div style={{ width: 24, fontSize: 12, color: THEME.textFaint, textAlign: "right", flexShrink: 0 }}>{c.count}</div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
@@ -794,13 +799,17 @@ function StatsPanel({ books }) {
       .slice(0, 5);
   }, [books]);
 
-  const ratingCounts = useMemo(() => {
-    const buckets = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+  const genreData = useMemo(() => {
+    const counts = {};
     books.forEach((b) => {
-      const r = Math.round(b.rating || 0);
-      if (r >= 1 && r <= 5) buckets[r] += 1;
+      const g = (b.genre || "").trim();
+      if (!g) return;
+      counts[g] = (counts[g] || 0) + 1;
     });
-    return [5, 4, 3, 2, 1].map((r) => ({ rating: r, count: buckets[r] }));
+    return Object.entries(counts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 6)
+      .map(([genre, count]) => ({ genre, count }));
   }, [books]);
 
   const avgPerYear = useMemo(() => {
@@ -855,8 +864,12 @@ function StatsPanel({ books }) {
           )}
         </div>
         <div>
-          <div style={{ fontSize: 12.5, fontWeight: 600, color: THEME.textSecondary, marginBottom: 10 }}>Rating distribution</div>
-          <RatingDistribution counts={ratingCounts} />
+          <div style={{ fontSize: 12.5, fontWeight: 600, color: THEME.textSecondary, marginBottom: 10 }}>Top genres</div>
+          {genreData.length > 0 ? (
+            <GenreBreakdown data={genreData} />
+          ) : (
+            <div style={{ fontSize: 12, color: THEME.textFaint }}>Add a genre to your books to see this.</div>
+          )}
         </div>
       </div>
 
@@ -1065,15 +1078,47 @@ export default function BookTracker() {
   return (
     <div style={{ fontFamily: "'Poppins', 'Segoe UI', sans-serif", background: THEME.bg, minHeight: "100vh", padding: "0 0 60px" }}>
       <div style={{ maxWidth: 1080, margin: "0 auto", padding: "32px 20px" }}>
-        <header style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 16, marginBottom: 24 }}>
-          <div>
-            <h1 style={{ margin: 0, fontSize: 28, fontWeight: 800, color: THEME.textHeading, display: "flex", alignItems: "center", gap: 10 }}>
-              <i className="ti ti-books" aria-hidden="true" style={{ color: THEME.accent }} />
-              My reading shelf
-            </h1>
-            <p style={{ margin: "4px 0 0", color: THEME.textMuted, fontSize: 14 }}>
-              {headerStats.total} books tracked since 2014
-            </p>
+        <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16, marginBottom: 24 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+            <div>
+              <h1 style={{ margin: 0, fontSize: 28, fontWeight: 800, color: THEME.textHeading, display: "flex", alignItems: "center", gap: 10 }}>
+                <i className="ti ti-books" aria-hidden="true" style={{ color: THEME.accent }} />
+                My reading shelf
+              </h1>
+              <p style={{ margin: "4px 0 0", color: THEME.textMuted, fontSize: 14 }}>
+                tracked since 2014
+              </p>
+            </div>
+            <div
+              style={{
+                background: THEME.roseSoftBg,
+                borderRadius: 999,
+                padding: "8px 18px 8px 14px",
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                alignSelf: "center",
+              }}
+            >
+              <div
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: "50%",
+                  background: THEME.rose,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
+                <i className="ti ti-bookmark-filled" aria-hidden="true" style={{ color: "#fff", fontSize: 16 }} />
+              </div>
+              <div>
+                <div style={{ fontSize: 22, fontWeight: 800, color: "#8a3f4c", lineHeight: 1 }}>{headerStats.total}</div>
+                <div style={{ fontSize: 10.5, color: "#a9586a", fontWeight: 600, letterSpacing: 0.3 }}>BOOKS READ</div>
+              </div>
+            </div>
           </div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             <button
