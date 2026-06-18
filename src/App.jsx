@@ -740,9 +740,9 @@ function GenreBreakdown({ data }) {
         const pct = Math.round((d.count / total) * 100);
         return (
           <div key={d.genre}>
-            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: THEME.textSecondary, marginBottom: 3 }}>
-              <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 140 }}>{d.genre}</span>
-              <span style={{ color: THEME.textFaint, flexShrink: 0, marginLeft: 8 }}>{d.count} · {pct}%</span>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: THEME.textSecondary, marginBottom: 3, gap: 8 }}>
+              <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0 }}>{d.genre}</span>
+              <span style={{ color: THEME.textFaint, flexShrink: 0 }}>{d.count} · {pct}%</span>
             </div>
             <div style={{ background: THEME.surfaceAlt, borderRadius: 6, height: 10, overflow: "hidden" }}>
               <div
@@ -855,7 +855,7 @@ function StatsPanel({ books }) {
         ))}
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 24 }}>
+      <div className="stats-charts-grid">
         <div>
           <div style={{ fontSize: 12.5, fontWeight: 600, color: THEME.textSecondary, marginBottom: 10 }}>Books finished per year</div>
           {yearData.data.length > 0 ? (
@@ -1107,7 +1107,14 @@ export default function BookTracker() {
 
   return (
     <div style={{ fontFamily: "'Poppins', 'Segoe UI', sans-serif", background: THEME.bg, minHeight: "100vh", padding: "0 0 60px" }}>
-      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+      <style>{`
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .stats-charts-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px; min-width: 0; }
+        .stats-charts-grid > div { min-width: 0; }
+        @media (max-width: 640px) {
+          .stats-charts-grid { grid-template-columns: 1fr; gap: 20px; }
+        }
+      `}</style>
       <div style={{ maxWidth: 1080, margin: "0 auto", padding: "32px 20px" }}>
         <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16, marginBottom: 24 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
